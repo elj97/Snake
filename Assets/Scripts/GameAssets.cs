@@ -48,13 +48,14 @@ public class GameAssets : MonoBehaviour
 
 public enum SnakeBodyType
 {
-	Blank,
-	Shooty,
-	Spikey,
-	Healthy,
-	Speedy,
+	Blank,			// Default body, no special abilities
+	Shooty,			// Shoots
+	Spikey,			// Damages on contact
+	Healthy,		// Adds armour (re: should be retitled to Armour)
+	Speedy,			// Increases speed
 }
 
+// Soon to be deprecated if store is created
 public enum FoodType
 {
 	Basic,
@@ -68,8 +69,25 @@ public enum ProjectileType
 
 public enum ProjectileDirection
 {
-	BodyFace, // Will shoot the direction the body is facing
-	RandomSide, // Will shoot 180 or -180 degrees of the direction the body is facing, randomly deciding which
-	OrderSide, // Will shoot 180 then -180 degrees of the direction the body is facing
-	Random, // Will shoot in any direction randomly
+	BodyFace,		// Will shoot the direction the body is facing
+	RandomSide,		// Will shoot 180 or -180 degrees of the direction the body is facing, randomly deciding which
+	OrderSide,		// Will shoot 180 then -180 degrees of the direction the body is facing
+	Random,			// Will shoot in any direction randomly
+}
+
+[System.Flags]
+public enum EnemyType
+{
+	Melee = 1 << 0,		// Damage on contact
+	Ranged = 1 << 1,	// Shoots something
+	AOE = 1 << 2,		// Periodically damage everything in radius around it
+}
+
+public enum EnemyMovementType
+{
+	Spin,			// Spins in place
+	Erratic,		// Random Movement
+	FollowPlayer,	// Will follow player, stopping when close enough
+	CirclePlayer,	// Will start circling player when close enough
+	RamPlayer,		// Will speed up when close enough to player
 }
