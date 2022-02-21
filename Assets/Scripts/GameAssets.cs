@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,9 @@ public class GameAssets : MonoBehaviour
 	// Effects
 	public GameObject Explosion { get { return m_Explosion; } }
 
+	// Sound Effects
+	public Sfx_UI SFX_UI { get { return m_sfxUI; } } // example
+
 	[Header("Snake Body")]
 	[SerializeField] GameObject m_SnakeBodyBlank;
 	[SerializeField] GameObject m_SnakeBodyShooty;
@@ -40,10 +44,23 @@ public class GameAssets : MonoBehaviour
 	[Header("Effects")]
 	[SerializeField] GameObject m_Explosion;
 
+	[Header("Sound Effects")]
+	[SerializeField] Sfx_UI m_sfxUI; // example
+
 	private void Awake()
 	{
 		Instance = this;
 	}
+}
+
+// example
+[Serializable]
+public struct Sfx_UI
+{
+	public GameObject BigExplosionSFX { get { return m_BigExplosionSFX; } }
+
+	[Header("Explosions")]
+	[SerializeField] GameObject m_BigExplosionSFX;
 }
 
 public enum SnakeBodyType
