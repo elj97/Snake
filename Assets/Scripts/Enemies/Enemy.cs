@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour
 
 	private void Update()
 	{
-		// Do Regular Jobs
+		/// Do Regular Jobs
 		// Frame Counter
 		if (m_FrameCounter < 23767)
 		{
@@ -23,6 +23,12 @@ public class Enemy : MonoBehaviour
 		else
 		{
 			m_FrameCounter = 1;
+		}
+
+		// Movement
+		if (m_FrameCounter % m_MovementUpdateTime == 0)
+		{
+			Movement();
 		}
 	}
 
@@ -73,16 +79,26 @@ public class Enemy : MonoBehaviour
 
 	private void Movement()
 	{
+		if (m_Movement == EnemyMovementType.Erratic)
+		{
+			m_Target = ErraticTarget();
+		}
+
 		Vector3 positionTarget = m_Target;
 		Vector3 moveDirection = positionTarget - transform.position;
 		transform.position += moveDirection * m_Speed * Time.deltaTime;
 
 		float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
 		transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-
-		Invoke("Movement", m_MovementUpdateTime / Time.deltaTime);
 	}
 
+	private Vector3 ErraticTarget()
+	{
+		// Use navmesh to determine possible target placements
+		return Vector3.zero;
+	}
+
+	// Do these need to be organised?
 	private float m_Speed;
 	private EnemyType m_Self;
 	private EnemyMovementType m_Movement;
