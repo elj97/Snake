@@ -9,6 +9,12 @@ public class GameController : MonoBehaviour
 	public static GameController Instance;
 
 	public bool GameIsPaused { get { return m_GameIsPaused; } }
+	/// <summary>
+	/// GameTime does not increase during pause.
+	/// Resets after hitting 23767 (~396.12 minutes || ~6.60 hours)
+	/// </summary>
+	// After hitting the max it will reset but some objects using the timer before its reset may run into issues - to be fixed but low priority
+	public float GameTime { get { return m_GameTime; } }
 	public bool PlayerIsAlive { get; set; }
 
 	[SerializeField] float m_FoodSpawnIntervalMin = 1f;
@@ -19,6 +25,11 @@ public class GameController : MonoBehaviour
 	[SerializeField] GameObject m_Countdown;
 
 	[SerializeField] UnityEvent m_OnResume;
+
+	public void PauseButton()
+	{
+		TriggerPauseAndResume(m_PauseMenu, m_InGameMenuItems);
+	}
 
 	public void PauseGame()
 	{
@@ -62,7 +73,7 @@ public class GameController : MonoBehaviour
 		{
 			if (m_GameIsPaused)
 			{
-				if (m_Countdown.activeInHierarchy)
+				if (m_Countdown.activeInHierarchy || m_Countdown.activeSelf)
 				{
 					m_Countdown.SetActive(false);
 					ResumeGame();
@@ -77,7 +88,14 @@ public class GameController : MonoBehaviour
 							obj.SetActive(false);
 						}
 					}
-					TriggerCountdown();
+					if (PlayerPrefs.GetInt("Countdown") == 0)
+					{
+						ResumeGame();
+					}
+					else
+					{
+						TriggerCountdown();
+					}
 				}
 			}
 			else
@@ -101,6 +119,8 @@ public class GameController : MonoBehaviour
 
 		m_InGameMenuItems.Add(m_PauseMenu);
 		m_InGameMenuItems.Add(m_StoreMenu);
+
+		m_Countdown.SetActive(PlayerPrefs.GetInt("Countdown") == 0 ? false : true);
 	}
 
 	private void Start()
@@ -118,6 +138,19 @@ public class GameController : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Tab))
 		{
 			TriggerPauseAndResume(m_StoreMenu, m_InGameMenuItems);
+		}
+
+		if (m_GameIsPaused == false)
+		{
+			if (m_GameTime < 23767)
+			{
+				m_GameTime += Time.deltaTime;
+			}
+			else
+			{
+				Debug.Log("GameTime timer reached max time, resetting to 0");
+				m_GameTime = 0;
+			}
 		}
 	}
 
@@ -153,4 +186,5 @@ public class GameController : MonoBehaviour
 	private float m_TempFoodSpawnInterval;
 	private bool m_SpawnedFood;
 	private List<GameObject> m_InGameMenuItems = new List<GameObject>();
+	private float m_GameTime;
 }

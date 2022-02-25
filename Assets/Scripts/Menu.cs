@@ -22,6 +22,7 @@ public class Menu : MonoBehaviour
 	private void Start()
 	{
 		// Setup Default Settings
-		var cameraShake = PlayerPrefs.GetFloat("CameraShake", 1);
+		PlayerPrefs.GetFloat("CameraShake", 1);
+		PlayerPrefs.GetFloat("Volume", 1);
 	}
 }

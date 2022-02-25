@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using System;
 
 /// <summary>
 /// Menu and Settings scripts should be combined
@@ -13,18 +14,24 @@ public class Settings : MonoBehaviour
 {
 	[SerializeField] Slider m_CameraShakeSlider;
 	[SerializeField] Slider m_VolumeSlider;
+	[SerializeField] ControlsSetting m_ControlSetting;
+	[SerializeField] CountdownSetting m_CountdownSetting;
 
 	public void SetCameraShake()
 	{
 		m_LCameraShakeValue = m_CameraShakeSlider.value;
-
-		Debug.Log($"Local Camera Shake Value is: {m_LCameraShakeValue}");
 	}
-
-	// Example
-	public void SetExampleBool(bool boolean)
+	
+	public void SetCountdown()
 	{
-		m_ExampleBool = boolean ? 2 : 0;
+		m_LCountdown = !m_LCountdown;
+		BoolToggleParts(m_LCountdown, m_CountdownSetting.On, m_CountdownSetting.Off);
+	}
+	
+	public void SetControls()
+	{
+		m_LControls = !m_LControls;
+		BoolToggleParts(m_LControls, m_ControlSetting.On, m_ControlSetting.Off);
 	}
 
 	public void ResetSetting()
@@ -39,27 +46,40 @@ public class Settings : MonoBehaviour
 
 		PlayerPrefs.SetFloat("Volume", m_LVolumeValue);
 
-		// Example;
-		PlayerPrefs.SetInt("ExampleBool", m_ExampleBool);
+		PlayerPrefs.SetInt("Controls", m_LControls ? 2 : 0);
+
+		PlayerPrefs.SetInt("Countdown", m_LCountdown ? 2 : 0);
 
 		// Settings
 		m_CameraShakeSlider.value = m_LCameraShakeValue;
-
-		Debug.Log($"Player Prefs Camera Shake Value is: {PlayerPrefs.GetFloat("CameraShake")}");
 
 		SoundManager.Instance.ChangeMasterVolume(m_LVolumeValue);
 	}
 
 	private void Start()
 	{
-		// setting initial values from player prefs
-		m_CameraShakeSlider.value = PlayerPrefs.GetFloat("CameraShake");
-		m_VolumeSlider.value = PlayerPrefs.GetFloat("Volume");
-		// Example
-		m_ExampleBoolBoolean = PlayerPrefs.GetInt("ExampleBool") == 0 ? false : true;
+		// Getting Player Prefs
+		float cameraShake = PlayerPrefs.GetFloat("CameraShake");
+		float volume = PlayerPrefs.GetFloat("Volume");
+		bool controls = PlayerPrefs.GetInt("Controls") == 0 ? false : true;
+		bool countdown = PlayerPrefs.GetInt("Countdown") == 0 ? false : true;
 
-		// add listeners
+		// Setting initial values from Player Prefs
+		m_CameraShakeSlider.value = cameraShake;
+		m_VolumeSlider.value = volume;
+		BoolToggleParts(controls, m_ControlSetting.On, m_ControlSetting.Off);
+		BoolToggleParts(countdown, m_CountdownSetting.On, m_CountdownSetting.Off);
+
+		// Setting local values from Player Prefs
+		m_LCameraShakeValue = cameraShake;
+		m_LVolumeValue = volume;
+		m_LControls = controls;
+		m_LCountdown = countdown;
+		
+		// Add listeners
 		m_VolumeSlider.onValueChanged.AddListener(delegate {SetVolume();});
+		m_ControlSetting.ThisButton.onClick.AddListener(SetControls);
+		m_CountdownSetting.ThisButton.onClick.AddListener(SetCountdown);
 	}
 
 	private void SetVolume()
@@ -68,11 +88,45 @@ public class Settings : MonoBehaviour
 		SoundManager.Instance.ChangeMasterVolume(m_LVolumeValue);
 	}
 
+	private void BoolToggleParts(bool boolean, GameObject[] onObj, GameObject[] offObj)
+	{
+		foreach (GameObject obj in onObj)
+		{
+			obj.SetActive(boolean);
+		}
+		foreach (GameObject obj in offObj)
+		{
+			obj.SetActive(!boolean);
+		}
+	}
+
 	// Local values, discarded on exit
 	private float m_LCameraShakeValue;
 	private float m_LVolumeValue;
+	private bool m_LControls;
+	private bool m_LCountdown;
+}
 
-	// Using these to example how to do a bool since there is no playerprefs.setbool and I'll forget later how to
-	private int m_ExampleBool;
-	private bool m_ExampleBoolBoolean;
+[Serializable]
+struct ControlsSetting
+{
+	public Button ThisButton { get { return m_Button; } }
+	public GameObject[] On { get { return m_On; } }
+	public GameObject[] Off { get { return m_Off; } }
+
+	[SerializeField] Button m_Button;
+	[SerializeField] GameObject[] m_On;
+	[SerializeField] GameObject[] m_Off;
+}
+
+[Serializable]
+struct CountdownSetting
+{
+	public Button ThisButton { get { return m_Button; } }
+	public GameObject[] On { get { return m_On; } }
+	public GameObject[] Off { get { return m_Off; } }
+
+	[SerializeField] Button m_Button;
+	[SerializeField] GameObject[] m_On;
+	[SerializeField] GameObject[] m_Off;
 }

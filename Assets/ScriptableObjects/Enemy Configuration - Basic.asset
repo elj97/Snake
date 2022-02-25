@@ -15,4 +15,4 @@ MonoBehaviour:
   m_Type: 1
   m_Movement: 1
   m_FindPlayerRadius: 1
-  m_MovementSpeed: 5
+  m_MovementSpeed: 2

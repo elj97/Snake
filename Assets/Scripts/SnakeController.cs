@@ -45,6 +45,8 @@ public class SnakeController : MonoBehaviour
 	private void Awake()
 	{
 		Instance = this;
+
+		m_Controls = (PlayerPrefs.GetInt("Controls")) ;
 	}
 
 	private void Start()
@@ -61,8 +63,24 @@ public class SnakeController : MonoBehaviour
 			transform.position += transform.up * (m_MoveSpeed * (1 + SpeedMultiplier)) * Time.deltaTime;
 
 			// Steer
-			float steerDirection = Input.GetAxis("Horizontal");
-			transform.Rotate(Vector3.forward * -steerDirection * m_SteerSpeed * Time.deltaTime);
+			float steerDirection = 0.0f;
+			float steerSpeed;
+
+			if (m_Controls == 0)
+			{
+				steerDirection = Input.GetAxis("Horizontal");
+				steerSpeed = m_SteerSpeed;
+			}
+			else
+			{
+				var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+				steerDirection = Vector3.Dot(transform.right, (mousePosition - transform.position).normalized);
+
+				steerSpeed = m_SteerSpeed * 1.5f;
+			}
+
+			transform.Rotate(Vector3.forward * -steerDirection * steerSpeed * Time.deltaTime);
 
 			// Store Position History
 			if (m_UpdateTime < m_PositionHistoryUpdateTime)
@@ -76,7 +94,7 @@ public class SnakeController : MonoBehaviour
 			}
 
 			// Move Body Parts
-			int index = 0;
+			int index = 1;
 			foreach (var body in m_BodyParts)
 			{
 				Vector3 point = m_PositionHistory[Mathf.Min(index * m_Gap, m_PositionHistory.Count - 1)];
@@ -240,4 +258,6 @@ public class SnakeController : MonoBehaviour
 	private float m_UpdateTime;
 	private bool m_Immune;
 	private float m_ImmunityTimeElapsed;
+
+	private int m_Controls;
 }

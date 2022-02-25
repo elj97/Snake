@@ -6,14 +6,22 @@ using UnityEngine.Pool;
 
 public class EnemySpawner : MonoBehaviour
 {
+	public static EnemySpawner Instance;
+
 	[SerializeField] int m_EnemyAmount = 5;
 	[SerializeField] float m_SpawnDelay = 1f;
-	[SerializeField] Enemy m_EnemyPrefabTest;
+	[SerializeField] GameObject m_EnemyPrefabTest;
+
+	public void KillEnemy(Enemy enemy)
+	{
+		m_Pool.Release(enemy);
+	}
 
 	private void Awake()
 	{
-		// Is expensive and in the spawner itself should only be called once and then used for all enemy spawns 
-		NavMeshTriangulation m_Triangulation = NavMesh.CalculateTriangulation();
+		Instance = this;
+		// This is an expensive call and should not be called often
+		m_Triangulation = NavMesh.CalculateTriangulation();
 	}
 
 	private void Start()
@@ -24,15 +32,15 @@ public class EnemySpawner : MonoBehaviour
 
 		for (var i = 0; i < m_EnemyAmount; i++)
 		{
-			var enemy = m_Pool.Get();
-			enemy.transform.position = Vector3.zero;
+			Enemy enemy = m_Pool.Get();
 		}
 	}
 
 	#region Pooling
 	private Enemy CreatePooledItem()
 	{
-		return Instantiate(m_EnemyPrefabTest);
+		GameObject enemyObj = Instantiate(m_EnemyPrefabTest);
+		return enemyObj.GetComponent<Enemy>();
 	}
 	private void OnReturnedToPool(Enemy enemy)
 	{
@@ -43,7 +51,7 @@ public class EnemySpawner : MonoBehaviour
 	{
 		enemy.gameObject.SetActive(true);
 		/// Initialization
-		enemy.Triangulation = m_Triangulation;
+		enemy.Triangulation = m_Triangulation; // This should go in instantiation not take
 		// Spawn Position
 		int vertexIndex = Random.Range(0, m_Triangulation.vertices.Length);
 		NavMeshHit hit;
@@ -69,13 +77,7 @@ public class EnemySpawner : MonoBehaviour
 		for (var i = 0; i < m_EnemyAmount; i++)
 		{
 			var enemy = m_Pool.Get();
-			enemy.transform.position = Vector3.zero;
 		}
-	}
-
-	private void KillEnemy(Enemy enemy)
-	{
-		m_Pool.Release(enemy);
 	}
 
 	private ObjectPool<Enemy> m_Pool;
