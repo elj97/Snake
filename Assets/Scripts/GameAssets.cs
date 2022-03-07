@@ -7,25 +7,12 @@ public class GameAssets : MonoBehaviour
 {
 	public static GameAssets Instance;
 
-	// Snake Body
-	public GameObject SnakeBody_Blank { get { return m_SnakeBodyBlank; } }
-	public GameObject SnakeBody_Shooty { get { return m_SnakeBodyShooty; } }
-	public GameObject SnakeBody_Spikey { get { return m_SnakeBodySpikey; } }
+	#region Snake Body
+	public GameObject SnakeBody_Blank	{ get { return m_SnakeBodyBlank; } }
+	public GameObject SnakeBody_Shooty	{ get { return m_SnakeBodyShooty; } }
+	public GameObject SnakeBody_Spikey	{ get { return m_SnakeBodySpikey; } }
 	public GameObject SnakeBody_Healthy { get { return m_SnakeBodyHealthy; } }
-	public GameObject SnakeBody_Speedy { get { return m_SnakeBodySpeedy; } }
-
-	// Food
-	public GameObject Food_Basic { get { return m_FoodBasic; } }
-	public GameObject Food_Spicy { get { return m_FoodSpicy; } }
-
-	// Projectiles
-	public GameObject Bullet_Basic { get { return m_BulletBasic; } }
-
-	// Effects
-	public GameObject Explosion { get { return m_Explosion; } }
-
-	// Sound Effects
-	public Sfx_UI SFX_UI { get { return m_sfxUI; } } // example
+	public GameObject SnakeBody_Speedy	{ get { return m_SnakeBodySpeedy; } }
 
 	[Header("Snake Body")]
 	[SerializeField] GameObject m_SnakeBodyBlank;
@@ -34,18 +21,47 @@ public class GameAssets : MonoBehaviour
 	[SerializeField] GameObject m_SnakeBodyHealthy;
 	[SerializeField] GameObject m_SnakeBodySpeedy;
 
+	#endregion
+
+	#region Food
+	public GameObject Food_Basic { get { return m_FoodBasic; } }
+	public GameObject Food_Spicy { get { return m_FoodSpicy; } }
+
 	[Header("Food")]
 	[SerializeField] GameObject m_FoodBasic;
 	[SerializeField] GameObject m_FoodSpicy;
+	#endregion
+
+	#region Projectiles
+	public GameObject Bullet_Basic { get { return m_BulletBasic; } }
 
 	[Header("Projectiles")]
 	[SerializeField] GameObject m_BulletBasic;
+	#endregion
+
+	#region Effects
+	public GameObject Explosion { get { return m_Explosion; } }
 
 	[Header("Effects")]
 	[SerializeField] GameObject m_Explosion;
+	#endregion
+
+	#region Sound Effects
+	public Sfx_UI SFX_UI { get { return m_sfxUI; } } // example
 
 	[Header("Sound Effects")]
 	[SerializeField] Sfx_UI m_sfxUI; // example
+	#endregion
+
+	#region Tags
+	public string TagDamage	{ get { return m_TagDamage; } }
+	public string TagBounce	{ get { return m_TagBounce; } }
+	public string TagSafe	{ get { return m_TagSafe; } }
+
+	private string m_TagDamage = "Damage";
+	private string m_TagBounce = "Bounce";
+	private string m_TagSafe = "Safe";
+	#endregion
 
 	private void Awake()
 	{
@@ -102,7 +118,7 @@ public enum EnemyType
 
 public enum EnemyMovementType
 {
-	Spin,			// Spins in place
+	Stay,			// Stays in place
 	Erratic,		// Random Movement
 	FollowPlayer,	// Will follow player, stopping when close enough
 	CirclePlayer,	// Will start circling player when close enough

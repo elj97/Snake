@@ -24,13 +24,34 @@ public class SnakeController : MonoBehaviour
 
 	[SerializeField] float m_ImmunityTime;
 
+	[SerializeField] int m_SafeBody; // How many body parts from the head are safe to be touched without dying
+
 	public void GrowSnake(SnakeBodyType snakeBody)
 	{
-		GameObject body = Instantiate(ChosenBody(snakeBody));
+		SnakeBody body = Instantiate(ChosenBody(snakeBody).GetComponent<SnakeBody>());
 		m_BodyParts.Add(body);
+
+		bool safe = false;
+		for (int i = 0; i < m_SafeBody - 1; i++)
+		{
+			if (i + 1 >= m_BodyParts.Count && body == m_BodyParts[i])
+			{
+				safe = true;
+				break;
+			}
+		}
+		if (safe)
+		{
+			body.gameObject.tag = GameAssets.Instance.TagSafe;
+		}
+		else
+		{
+			body.gameObject.tag = GameAssets.Instance.TagDamage;
+		}
+
 		if (GameController.Instance.GameIsPaused)
 		{
-			body.SetActive(false);
+			body.gameObject.SetActive(false);
 		}
 	}
 
@@ -38,7 +59,7 @@ public class SnakeController : MonoBehaviour
 	{
 		foreach (var body in m_BodyParts)
 		{
-			body.SetActive(setBool);
+			body.gameObject.SetActive(setBool);
 		}
 	}
 
@@ -122,7 +143,7 @@ public class SnakeController : MonoBehaviour
 		}
 	}
 
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnTriggerEnter(Collider collision)
 	{
 		if (m_Started)
 		{
@@ -156,13 +177,14 @@ public class SnakeController : MonoBehaviour
 		foreach(var body in m_BodyParts)
 		{
 			// If there is a body part to destroy then destroy it and stop
-			if (body != null && body.activeInHierarchy)
+			if (body != null && body.gameObject.activeInHierarchy)
 			{
 				StartCoroutine(m_CameraShake.Shake(0.1f, 0.2f));
 				Instantiate(GameAssets.Instance.Explosion, body.transform.position, Quaternion.identity);
 				m_BodyParts.Remove(body);
-				DeactivateObject(body);
+				DeactivateObject(body.gameObject);
 				bodyDestroyed = true;
+				CheckBodySafety();
 				break;
 			}
 		}
@@ -202,6 +224,17 @@ public class SnakeController : MonoBehaviour
 		else
 		{
 			Invoke("TriggerRetryButton", 1f);
+		}
+	}
+
+	private void CheckBodySafety()
+	{
+		for (int i = 0; i < m_SafeBody - 1; i++)
+		{
+			if (i + 1 <= m_BodyParts.Count)
+			{
+				m_BodyParts[i].gameObject.tag = GameAssets.Instance.TagSafe;
+			}
 		}
 	}
 
@@ -246,7 +279,7 @@ public class SnakeController : MonoBehaviour
 		return body;
 	}
 
-	private List<GameObject> m_BodyParts = new List<GameObject>();
+	private List<SnakeBody> m_BodyParts = new List<SnakeBody>();
 	private List<Vector3> m_PositionHistory = new List<Vector3>();
 
 	private float m_StartTime = 1f;

@@ -7,6 +7,10 @@ TagManager:
   - Food_Basic
   - Food_Spicy
   - Body
+  - Damage
+  - Bounce
+  - Pickup
+  - Safe
   layers:
   - Default
   - TransparentFX

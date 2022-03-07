@@ -10611,7 +10611,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1292875840}
   - component: {fileID: 1292875838}
-  - component: {fileID: 1292875837}
+  - component: {fileID: 1292875842}
   - component: {fileID: 1292875841}
   m_Layer: 0
   m_Name: Snake Controller
@@ -10620,22 +10620,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!58 &1292875837
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1292875836}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.40864563}
-  serializedVersion: 2
-  m_Radius: 0.5586456
 --- !u!114 &1292875838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10670,6 +10654,7 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   m_ImmunityTime: 0.2
+  m_SafeBody: 3
 --- !u!4 &1292875840
 Transform:
   m_ObjectHideFlags: 0
@@ -10687,27 +10672,35 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!50 &1292875841
-Rigidbody2D:
-  serializedVersion: 4
+--- !u!54 &1292875841
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1292875836}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
+  serializedVersion: 2
   m_Mass: 1
-  m_LinearDrag: 0
+  m_Drag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
   m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!135 &1292875842
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1292875836}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.75
+  m_Center: {x: 0, y: 0.2, z: 0}
 --- !u!1 &1297591881
 GameObject:
   m_ObjectHideFlags: 0

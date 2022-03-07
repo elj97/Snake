@@ -128,8 +128,11 @@ public class Enemy : MonoBehaviour
 			case EnemyMovementType.RamPlayer:
 				return Vector3.zero;
 			#endregion
-			#region case Spin
-			case EnemyMovementType.Spin:
+			#region case Stay
+			case EnemyMovementType.Stay:
+				m_Speed = 0;
+				m_MinMovementUpdate = 1000f; 
+				m_MaxMovementUpdate = 1000f;
 				return Vector3.zero;
 			#endregion
 		}
